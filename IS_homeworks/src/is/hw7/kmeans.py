@@ -81,12 +81,25 @@ def shouldStop(oldMeans, newMeans):
     return True
 
 
+def withinClusterPointScatter(X, means, labels):
+    sum = 0
+    for i in range(len(means)):
+        # Nk = len(X[labels == i])
+        pointsInTheCluster = X[labels == i]
+        currSum = 0
+        for p in pointsInTheCluster:
+            currSum += calculateDistance(p, means[i])
+        sum += currSum
+    return sum
+
+
 def kMeans(X, k):
     means = initCentriodsWithMaximumDistance(X, k)
     # means = initRandomCentroids(X, k)
     initMeans = means.copy()
     numOfPoints = X.shape[0]
     labels = np.zeros(X.shape[0])
+    oldCheck = 0
     while True:
         oldMeans = means.copy()
         for i in range(numOfPoints):
@@ -94,9 +107,18 @@ def kMeans(X, k):
             labels[i] = clusterIndex
         for clusterId in range(k):
             means[clusterId] = (1 / len(X[labels == clusterId])) * sumOfAllPointsInTheCluster(X[labels == clusterId])
+        # check = withinClusterPointScatter(X, means, labels)
         if shouldStop(oldMeans, means):
-            break
-    return means, labels, initMeans
+            check = withinClusterPointScatter(X, means, labels)
+            if check < 302:
+                break
+            else:
+                means = initCentriodsWithMaximumDistance(X, k)
+                # means = initRandomCentroids(X, k)
+                initMeans = means.copy()
+                numOfPoints = X.shape[0]
+                labels = np.zeros(X.shape[0])
+    return means, labels, initMeans, check
 
 
 if __name__ == '__main__':
@@ -105,7 +127,7 @@ if __name__ == '__main__':
     X = StandardScaler().fit_transform(df)
     X+=10
     # X = df.to_numpy()
-    means, labels, initMeans = kMeans(X, K)
+    means, labels, initMeans, check = kMeans(X, K)
     colors = ['red', 'green', 'blue', 'yellow', 'orange', 'black', 'pink', 'purple']
 
     pltMeans = numpy.array(means)
@@ -117,4 +139,4 @@ if __name__ == '__main__':
     plt.scatter(initMeans[:,0], initMeans[:,1], marker='v')
 
     plt.show()
-
+    print(check)
