@@ -99,7 +99,12 @@ def kMeans(X, k):
     initMeans = means.copy()
     numOfPoints = X.shape[0]
     labels = np.zeros(X.shape[0])
-    oldCheck = 0
+
+    if k == 4:
+        withinClusterPointScatterTreshold = 64
+    elif k == 8:
+        withinClusterPointScatterTreshold = 302
+
     while True:
         oldMeans = means.copy()
         for i in range(numOfPoints):
@@ -110,7 +115,7 @@ def kMeans(X, k):
         # check = withinClusterPointScatter(X, means, labels)
         if shouldStop(oldMeans, means):
             check = withinClusterPointScatter(X, means, labels)
-            if check < 302:
+            if check < withinClusterPointScatterTreshold:
                 break
             else:
                 means = initCentriodsWithMaximumDistance(X, k)
