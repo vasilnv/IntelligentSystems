@@ -42,12 +42,12 @@ def validate(df, countRepublicans, countDemocrats):
             else:
                 i = 2
             # calculate probability to be republican
-            probabilityRepublican += np.log((freqMatrixRepublicans[i][j] + 1) / (countRepublicans + 2))
+            probabilityRepublican += np.log((freqMatrixRepublicans[i][j] + 1) / (countRepublicans + 3))
             # calculate probability to be democrat
-            probabilityDemocrat += np.log((freqMatrixDemocrats[i][j] + 1) / (countDemocrats + 2))
+            probabilityDemocrat += np.log((freqMatrixDemocrats[i][j] + 1) / (countDemocrats + 3))
 
-        probabilityRepublican += np.log((countRepublicans + 1) / (countRepublicans + countDemocrats + 2))
-        probabilityDemocrat += np.log((countDemocrats + 1) / (countRepublicans + countDemocrats + 2))
+        probabilityRepublican += np.log((countRepublicans + 1) / (countRepublicans + countDemocrats + 3))
+        probabilityDemocrat += np.log((countDemocrats + 1) / (countRepublicans + countDemocrats + 3))
 
         isPredictedRepublican = probabilityRepublican >= probabilityDemocrat
         if isPredictedRepublican:
